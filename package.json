@@ -1,0 +1,13 @@
+{
+  "name": "e-cliniq-mern",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "description": "E-Cliniq is a web-based clinic management system designed to help nurses manage essential clinic processes such as maintaining patient records, scheduling appointments, monitoring medicine inventory, and generating monthly reports. It serves as a digital tool to improve the speed and organization of day-to-day clinic operations.",
+  "author": "KJVCadenas",
+  "license": "MIT"
+}
