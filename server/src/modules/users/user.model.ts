@@ -1,7 +1,10 @@
 import { Schema, model, Document } from 'mongoose';
 
 export interface UserDocument extends Document {
-  fullName: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  suffix?: string;
   email: string;
   password: string;
   role: 'patient' | 'doctor' | 'nurse' | 'admin';
@@ -9,8 +12,11 @@ export interface UserDocument extends Document {
 
 const userSchema = new Schema<UserDocument>(
   {
-    fullName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    firstName: { type: String, required: true, trim: true },
+    middleName: { type: String, trim: true, default: '' },
+    lastName: { type: String, required: true, trim: true },
+    suffix: { type: String, trim: true, default: '' },
+    email: { type: String, required: true, unique: true, trim: true },
     password: { type: String, required: true },
     role: {
       type: String,
