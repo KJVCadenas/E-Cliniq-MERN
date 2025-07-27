@@ -2,17 +2,21 @@ import bcrypt from 'bcryptjs';
 import { User } from '../users/user.model';
 import { RegisterInput, LoginInput } from './auth.types';
 import { signToken, verifyToken } from '../../utils/jwt';
-import { JwtPayload } from 'jsonwebtoken';
 
 export const register = async (input: RegisterInput) => {
   const existingUser = await User.findOne({ email: input.email });
   if (existingUser) throw new Error('Email already registered');
 
   const hashedPassword = await bcrypt.hash(input.password, 10);
+
   const user = await User.create({
-    ...input,
-    role: 'patient',
+    firstName: input.firstName,
+    middleName: input.middleName || '',
+    lastName: input.lastName,
+    suffix: input.suffix || '',
+    email: input.email,
     password: hashedPassword,
+    role: 'patient',
   });
 
   return user;
