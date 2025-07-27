@@ -8,13 +8,11 @@ const JWT_SECRET = process.env.JWT_SECRET || '';
 export const requireAuth =
   (allowedRoles?: UserRole[]) =>
   (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
+    const token = req.cookies?.token; // 👈 read from cookie instead
 
-    if (!authHeader?.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'Unauthorized: No token' });
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized: No token provided' });
     }
-
-    const token = authHeader.split(' ')[1];
 
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as {
@@ -22,14 +20,7 @@ export const requireAuth =
         role: UserRole;
       };
 
-      // Prevent routes from being accidentally exposed if roles are undefined
-      if (!allowedRoles) {
-        return res
-          .status(500)
-          .json({ error: 'Access roles not defined for this route' });
-      }
-
-      if (!allowedRoles.includes(decoded.role)) {
+      if (allowedRoles && !allowedRoles.includes(decoded.role)) {
         return res
           .status(403)
           .json({ error: 'Forbidden: This role does not have access' });

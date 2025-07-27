@@ -2,10 +2,14 @@ import bcrypt from 'bcryptjs';
 import { User } from '../users/user.model';
 import { RegisterInput, LoginInput } from './auth.types';
 import { signToken, verifyToken } from '../../utils/jwt';
+import axios from 'axios';
 
 export const register = async (input: RegisterInput) => {
   const existingUser = await User.findOne({ email: input.email });
   if (existingUser) throw new Error('Email already registered');
+
+  const isHuman = await validateCaptcha(input.recaptchaToken);
+  if (!isHuman) throw new Error('Failed CAPTCHA verification');
 
   const hashedPassword = await bcrypt.hash(input.password, 10);
 
@@ -35,15 +39,26 @@ export const login = async (input: LoginInput) => {
   return { token, user: safeUser };
 };
 
-export const getMe = async (token: string) => {
-  const payload = verifyToken(token);
-
-  if (typeof payload === 'string' || !('id' in payload)) {
-    throw new Error('Invalid token payload');
-  }
-
-  const user = await User.findById(payload.id).select('-password');
+export const getMe = async (id: string) => {
+  const user = await User.findById(id).select('-password');
   if (!user) throw new Error('User not found');
 
   return user;
+};
+
+export const validateCaptcha = async (token: string) => {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+
+  const res = await axios.post(
+    `https://www.google.com/recaptcha/api/siteverify`,
+    null,
+    {
+      params: {
+        secret: secretKey,
+        response: token,
+      },
+    }
+  );
+
+  return res.data.success;
 };

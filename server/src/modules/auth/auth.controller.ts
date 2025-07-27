@@ -42,11 +42,9 @@ export const logoutHandler = (req: Request, res: Response) => {
 };
 
 export const userDataHandler = async (req: Request, res: Response) => {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).json({ error: 'Unauthorized' });
-
   try {
-    const user = await getMe(token);
+    const { id } = req.user!;
+    const user = await getMe(id);
     res.status(200).json({ user });
   } catch (err: any) {
     console.log(err);

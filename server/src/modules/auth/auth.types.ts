@@ -5,6 +5,7 @@ export interface RegisterInput {
   suffix?: string;
   email: string;
   password: string;
+  recaptchaToken: string;
 }
 
 export interface LoginInput {
