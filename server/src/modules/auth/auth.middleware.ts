@@ -1,48 +1,44 @@
-// auth.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { logger } from '../../utils/logger';
+import { UserRole } from './auth.types';
 
 const JWT_SECRET = process.env.JWT_SECRET || '';
 
-export interface AuthRequest extends Request {
-  user?: {
-    id: string;
-    role: string;
-    iat?: number;
-    exp?: number;
-  };
-}
-
-// Middleware factory: allows optional role restriction
-export const requireAuth = (allowedRoles?: string[]) => {
-  if (!allowedRoles || allowedRoles.length === 0) {
-    throw new Error('requireAuth middleware must be called with allowed roles');
-  }
-
-  return (req: AuthRequest, res: Response, next: NextFunction) => {
+export const requireAuth =
+  (allowedRoles?: UserRole[]) =>
+  (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader?.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'Unauthorized: No token' });
     }
 
     const token = authHeader.split(' ')[1];
 
     try {
-      const decoded = jwt.verify(token, JWT_SECRET) as AuthRequest['user'];
-      req.user = decoded;
+      const decoded = jwt.verify(token, JWT_SECRET) as {
+        id: string;
+        role: UserRole;
+      };
 
-      if (!req.user?.role || !allowedRoles.includes(req.user.role)) {
+      // Prevent routes from being accidentally exposed if roles are undefined
+      if (!allowedRoles) {
         return res
-          .status(403)
-          .json({ error: 'Forbidden: Insufficient permissions' });
+          .status(500)
+          .json({ error: 'Access roles not defined for this route' });
       }
 
+      if (!allowedRoles.includes(decoded.role)) {
+        return res
+          .status(403)
+          .json({ error: 'Forbidden: This role does not have access' });
+      }
+
+      req.user = decoded;
       next();
     } catch (err: any) {
       logger.error(`Token verification failed: ${err.message}`);
       return res.status(401).json({ error: 'Unauthorized: Invalid token' });
     }
   };
-};

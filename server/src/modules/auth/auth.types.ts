@@ -8,3 +8,5 @@ export interface LoginInput {
   email: string;
   password: string;
 }
+
+export type UserRole = 'patient' | 'doctor' | 'nurse' | 'admin';
