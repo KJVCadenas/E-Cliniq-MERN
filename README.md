@@ -26,7 +26,7 @@ I chose to rebuild this project using the MERN stack as a way to measure how muc
 - JWT and bcrypt for authentication
 - Optional: Nodemailer for email notifications, PDFKit or Puppeteer for PDF report generation
 
-### Deployment
+### Deployment (Future)
 - Frontend: Vercel or Netlify
 - Backend: Render or Railway
 - Database: MongoDB Atlas
