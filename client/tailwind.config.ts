@@ -55,8 +55,8 @@ const config: Config = {
           foreground: 'hsl(var(--card-foreground))',
         },
         // Custom clinic theme colors
-        'accent-yellow': '#f1c40f',
-        'accent-yellow-dark': '#e7af41',
+        'clinic-yellow': '#f1c40f',
+        'clinic-yellow-dark': '#e7af41',
         dark: '#3a3a3a',
         'dark-secondary': '#4b4f58',
       },

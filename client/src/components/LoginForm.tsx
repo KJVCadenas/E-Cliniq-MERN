@@ -1,14 +1,24 @@
 'use client';
 
 import type React from 'react';
-
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import env from '@/config/env';
 import { logger } from '@/lib/logger';
+import { cn } from '@/lib/utils';
+import { Loader2Icon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import API from '../lib/axios';
+import axios from 'axios';
+import { useAuth } from '@/hooks/useAuth';
 
 interface LoginData {
   email: string;
@@ -28,6 +38,8 @@ export function LoginForm() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -55,31 +67,23 @@ export function LoginForm() {
     setErrors({});
 
     try {
-      const response = await fetch(`${env.apiUrl}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
+      const { data } = await API.post('/api/auth/login', {
+        email: formData.email,
+        password: formData.password,
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log('Login successful:', {
-          token: data.token,
-          user: data.user,
-        });
-        // Handle successful login (e.g., store token, redirect to dashboard)
-      } else {
-        setErrors({ general: data.message || 'Login failed' });
-      }
+      setUser(data.user);
+      navigate('/home');
     } catch (error) {
       logger.error('[handleSubmit]: ', error);
-      setErrors({ general: 'Network error. Please try again.' });
+
+      let message = 'Network error. Please try again.';
+
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.error || 'Wrong email or password';
+      }
+
+      setErrors({ general: message });
     } finally {
       setIsLoading(false);
     }
@@ -94,73 +98,108 @@ export function LoginForm() {
     };
 
   return (
-    <Card className="w-full border-accent-yellow">
-      <CardHeader className="bg-accent-yellow/10">
-        <CardTitle className="text-center text-dark">Sign In</CardTitle>
-      </CardHeader>
-      <CardContent className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-dark">
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={handleInputChange('email')}
-              className={errors.email ? 'border-red-500' : ''}
-              placeholder="Enter your email"
-            />
-            {errors.email && (
-              <p className="text-sm text-red-500">{errors.email}</p>
-            )}
-          </div>
+    <Card className="w-full max-w-3xl sm:h-[500px] gap-0 p-0 flex flex-col sm:flex-row overflow-hidden sm:rounded-2xl sm:shadow-lg">
+      {/* Left: Branding / Info */}
+      <div className="bg-clinic-primary text-primary-foreground flex flex-col items-center justify-center p-8 text-center w-full sm:w-1/2">
+        <h1 className="text-4xl font-bold mb-2">APC E-Cliniq</h1>
+        <p className="text-base text-primary-foreground/80">
+          Your gateway to the Online Clinic System
+        </p>
+      </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-dark">
-              Password
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              value={formData.password}
-              onChange={handleInputChange('password')}
-              className={errors.password ? 'border-red-500' : ''}
-              placeholder="Enter your password"
-            />
-            {errors.password && (
-              <p className="text-sm text-red-500">{errors.password}</p>
-            )}
-          </div>
+      {/* Right: Login Form */}
+      <div className="bg-white p-6 sm:p-8 w-full sm:w-1/2 flex flex-col justify-center">
+        <CardHeader className="p-0 mb-4">
+          <CardTitle className="text-2xl text-foreground text-center">
+            Sign In
+          </CardTitle>
+          <CardDescription className="text-center text-muted-foreground">
+            Enter your credentials below
+          </CardDescription>
+        </CardHeader>
 
+        <CardContent className="p-0">
           {errors.general && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+            <div className="p-3 mb-3 bg-red-50 border border-red-200 rounded-md">
               <p className="text-sm text-red-600">{errors.general}</p>
             </div>
           )}
 
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-primary text-white hover:bg-primary/90"
-          >
-            {isLoading ? 'Signing In...' : 'Sign In'}
-          </Button>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? 'email-error' : undefined}
+                value={formData.email}
+                onChange={handleInputChange('email')}
+                className={cn(
+                  errors.email && 'border-red-500 focus-visible:ring-red-500'
+                )}
+                placeholder="Enter your email"
+              />
+              {errors.email && (
+                <p id="email-error" className="text-sm text-red-500">
+                  {errors.email}
+                </p>
+              )}
+            </div>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              {"Don't have an account? "}
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                autoComplete="current-password"
+                aria-invalid={!!errors.password}
+                aria-describedby={
+                  errors.password ? 'password-error' : undefined
+                }
+                value={formData.password}
+                onChange={handleInputChange('password')}
+                className={cn(
+                  errors.password && 'border-red-500 focus-visible:ring-red-500'
+                )}
+                placeholder="Enter your password"
+              />
+              {errors.password && (
+                <p id="password-error" className="text-sm text-red-500">
+                  {errors.password}
+                </p>
+              )}
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isLoading}
+              aria-busy={isLoading}
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                  Signing In...
+                </>
+              ) : (
+                'Sign In'
+              )}
+            </Button>
+
+            <div className="text-center text-sm text-muted-foreground">
+              Don&apos;t have an account?{' '}
               <a
                 href="/register"
-                className="text-accent-yellow hover:underline font-medium"
+                className="text-accent hover:underline font-medium"
               >
                 Register here
               </a>
-            </p>
-          </div>
-        </form>
-      </CardContent>
+            </div>
+          </form>
+        </CardContent>
+      </div>
     </Card>
   );
 }
