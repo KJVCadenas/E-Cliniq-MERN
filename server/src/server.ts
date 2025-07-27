@@ -1,10 +1,10 @@
-import express from 'express';
 import dotenv from 'dotenv';
-import { connectDB } from './src/config/db';
-import router from './src/routes';
-import { logger } from './src/utils/logger';
+dotenv.config(); // Must be first!
 
-dotenv.config();
+import express from 'express';
+import { connectDB } from './config/db';
+import router from './routes';
+import { logger } from './utils/logger';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
