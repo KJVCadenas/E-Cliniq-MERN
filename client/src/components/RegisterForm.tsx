@@ -192,7 +192,7 @@ export function RegisterForm() {
           {serverError && <p className="text-sm text-red-600">{serverError}</p>}
 
           {/* Verify If Hooman */}
-          <div className="w-full flex justify-center">
+          <div className="flex justify-center">
             <ReCAPTCHA
               sitekey={env.recaptchaSiteKey}
               onChange={token => setCaptchaToken(token)}
@@ -202,6 +202,19 @@ export function RegisterForm() {
           <Button type="submit" disabled={isSubmitting} className="w-full">
             {isSubmitting ? 'Registering…' : 'Register'}
           </Button>
+
+          <div className="text-center mt-4">
+            <span className="text-sm text-gray-600">
+              Already have an account?{' '}
+            </span>
+            <Button
+              variant="link"
+              onClick={() => navigate('/login')}
+              className="text-sm p-0 font-medium text-clinic-yellow-dark"
+            >
+              Login
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>
