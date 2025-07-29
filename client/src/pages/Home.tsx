@@ -1,12 +1,27 @@
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import PatientHomePage from './Patient/PatientHome';
 
 export default function Home() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+
+  const homeContent = () => {
+    switch (user?.role) {
+      case 'patient':
+        return <PatientHomePage />;
+      default:
+        return (
+          <div>
+            <p>Welcome</p>
+            <Button onClick={logout}>Log out</Button>
+          </div>
+        );
+    }
+  };
+
   return (
     <div className="min-h-screen w-full bg-white flex items-center justify-center">
-      <p>Welcome</p>
-      <Button onClick={logout}>Log out</Button>
+      {homeContent()}
     </div>
   );
 }
