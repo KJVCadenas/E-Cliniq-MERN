@@ -33,7 +33,7 @@ export const login = async (input: LoginInput) => {
   const isMatch = await bcrypt.compare(input.password, user.password);
   if (!isMatch) throw new Error('Invalid credentials');
 
-  const token = signToken({ id: user._id, role: user.role });
+  const token = signToken({ sub: user._id.toString(), role: user.role });
 
   const { password, ...safeUser } = user.toObject();
   return { token, user: safeUser };
