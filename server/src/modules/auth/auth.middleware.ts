@@ -16,7 +16,7 @@ export const requireAuth =
 
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as {
-        id: string;
+        sub: string;
         role: UserRole;
       };
 
@@ -26,7 +26,10 @@ export const requireAuth =
           .json({ error: 'Forbidden: This role does not have access' });
       }
 
-      req.user = decoded;
+      req.user = {
+        id: decoded.sub,
+        role: decoded.role,
+      };
       next();
     } catch (err: any) {
       logger.error(`Token verification failed: ${err.message}`);

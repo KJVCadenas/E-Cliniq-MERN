@@ -2,12 +2,13 @@ import type { ErrorRequestHandler } from 'express';
 import { ZodError, treeifyError } from 'zod';
 import mongoose from 'mongoose';
 import { AppError } from '../types/AppError';
+import { logger } from '../utils/logger';
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   const isProd = process.env.NODE_ENV === 'production';
 
   // Log full error stack — dev or prod
-  console.error(`[ERROR] ${err.name || 'UnknownError'}:`, err);
+  logger.error(err, req);
 
   let statusCode = 500;
   let message = 'Internal Server Error';

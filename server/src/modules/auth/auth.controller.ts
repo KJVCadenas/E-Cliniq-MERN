@@ -7,7 +7,7 @@ export const registerHandler = async (req: Request, res: Response) => {
     const user = await register(req.body);
     res.status(201).json({ message: 'User registered', user });
   } catch (err: any) {
-    logger.error(err.message);
+    logger.error(err, req);
     res.status(400).json({ error: err.message });
   }
 };
@@ -20,13 +20,13 @@ export const loginHandler = async (req: Request, res: Response) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // only true on HTTPS
-      sameSite: 'lax',
+      sameSite: 'strict',
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
     res.status(200).json({ user });
   } catch (err: any) {
-    logger.error(err.message);
+    logger.error(err, req);
     res.status(401).json({ error: err.message });
   }
 };
@@ -47,7 +47,7 @@ export const userDataHandler = async (req: Request, res: Response) => {
     const user = await getMe(id);
     res.status(200).json({ user });
   } catch (err: any) {
-    console.log(err);
+    logger.error(err, req);
     res.status(401).json({ error: 'Invalid token' });
   }
 };

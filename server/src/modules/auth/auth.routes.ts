@@ -14,6 +14,10 @@ const router = Router();
 router.post('/login', loginHandler);
 router.post('/logout', logoutHandler);
 router.post('/register', validate(registerSchema), registerHandler);
-router.get('/me', requireAuth(), userDataHandler);
+router.get(
+  '/me',
+  requireAuth(['patient', 'doctor', 'nurse', 'admin']),
+  userDataHandler
+);
 
 export default router;
