@@ -20,7 +20,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-white flex items-center justify-center">
+    <div className="min-h-screen w-full bg-gray-200 flex items-center justify-center">
       {homeContent()}
     </div>
   );

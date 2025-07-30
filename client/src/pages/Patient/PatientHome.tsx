@@ -45,14 +45,14 @@ interface Appointment {
 
 // Mock data
 const mockCurrentAppointments: Appointment[] = [
-  //   {
-  //     id: '1',
-  //     doctor: { id: '1', name: 'Dr. Sarah Johnson' },
-  //     date: '2024-01-29',
-  //     time: '14:30',
-  //     location: 'Building A, Room 205',
-  //     status: 'confirmed',
-  //   },
+  {
+    id: '1',
+    doctor: { id: '1', name: 'Dr. Sarah Johnson' },
+    date: '2024-01-29',
+    time: '14:30',
+    location: 'Building A, Room 205',
+    status: 'confirmed',
+  },
   //   {
   //     id: '2',
   //     doctor: { id: '2', name: 'Dr. Michael Chen' },
@@ -64,22 +64,22 @@ const mockCurrentAppointments: Appointment[] = [
 ];
 
 const mockUpcomingAppointments: Appointment[] = [
-  //   {
-  //     id: '3',
-  //     doctor: { id: '3', name: 'Dr. Emily Rodriguez' },
-  //     date: '2024-02-01',
-  //     time: '09:00',
-  //     location: 'Building C, Room 301',
-  //     status: 'pending',
-  //   },
-  //   {
-  //     id: '4',
-  //     doctor: { id: '4', name: 'Dr. James Wilson' },
-  //     date: '2024-02-03',
-  //     time: '11:30',
-  //     location: 'Building A, Room 405',
-  //     status: 'pending',
-  //   },
+  {
+    id: '3',
+    doctor: { id: '3', name: 'Dr. Emily Rodriguez' },
+    date: '2024-02-01',
+    time: '09:00',
+    location: 'Building C, Room 301',
+    status: 'confirmed',
+  },
+  // {
+  //   id: '4',
+  //   doctor: { id: '4', name: 'Dr. James Wilson' },
+  //   date: '2024-02-03',
+  //   time: '11:30',
+  //   location: 'Building A, Room 405',
+  //   status: 'pending',
+  // },
   //   {
   //     id: '5',
   //     doctor: { id: '5', name: 'Dr. Lisa Thompson' },

@@ -17,7 +17,7 @@ export default function PrivateLayout() {
 
   return (
     <div className="min-h-screen">
-      <Sidebar userRole={user.role} />
+      <Sidebar />
       <main className="pl-[60px] transition-all duration-300">
         <Outlet />
       </main>
