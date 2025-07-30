@@ -202,12 +202,37 @@ export default function PatientHomePage() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
-      {/* Clinic Header */}
-      <header className="bg-primary text-white py-6 rounded-2xl shadow-sm text-center">
-        <h1 className="text-3xl font-extrabold">Asia Pacific College Clinic</h1>
-        <p className="mt-1 text-sm text-white/90">
-          Your health is our priority
-        </p>
+      {/* Patient Dashboard Header */}
+      <header className="bg-stone-800 text-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="p-6 md:p-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="flex items-center gap-5">
+              <div className="bg-white/20 p-3 rounded-full">
+                <User className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-4xl italic md:text-3xl font-bold">
+                  Hi, John Doe!
+                </h1>
+                <div className="mt-2">
+                  <p className="text-primary-foreground/90">
+                    <span className="font-semibold">Student ID:</span>{' '}
+                    2020-140189
+                  </p>
+                  <p className="text-primary-foreground/80">
+                    <span className="font-semibold">Course/Section:</span>{' '}
+                    BSCS-SS201
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-start lg:justify-end">
+              <Button className="bg-white text-stone-800 hover:bg-white/90 font-semibold rounded-lg px-4 py-2 h-auto transition-all duration-200 shadow-md hover:shadow-lg focus-visible:ring-2 focus-visible:ring-white/50">
+                Update Patient Profile
+              </Button>
+            </div>
+          </div>
+        </div>
       </header>
 
       {/* Today's Appointments */}
