@@ -72,14 +72,14 @@ const mockUpcomingAppointments: Appointment[] = [
     location: 'Building C, Room 301',
     status: 'confirmed',
   },
-  // {
-  //   id: '4',
-  //   doctor: { id: '4', name: 'Dr. James Wilson' },
-  //   date: '2024-02-03',
-  //   time: '11:30',
-  //   location: 'Building A, Room 405',
-  //   status: 'pending',
-  // },
+  {
+    id: '4',
+    doctor: { id: '4', name: 'Dr. James Wilson' },
+    date: '2024-02-03',
+    time: '11:30',
+    location: 'Building A, Room 405',
+    status: 'pending',
+  },
   //   {
   //     id: '5',
   //     doctor: { id: '5', name: 'Dr. Lisa Thompson' },
@@ -146,11 +146,11 @@ const fetchPastAppointments = (): Promise<Appointment[]> => {
 const getStatusColor = (status: Appointment['status']) => {
   switch (status) {
     case 'confirmed':
-      return 'w-[100px] bg-primary/10 border-primary text-primary';
+      return 'w-[100px] bg-green-500/10 border-green-500 text-green-500';
     case 'pending':
-      return 'w-[100px] bg-clinic-yellow/10 border-clinic-yellow text-clinic-yellow';
+      return 'w-[100px] bg-amber-100 border-amber-500 text-amber-500';
     case 'cancelled':
-      return 'w-[100px] bg-red-500/10 order-red-500 text-red-500';
+      return 'w-[100px] bg-red-500/10 border-red-500 text-red-500';
     case 'completed':
       return 'w-[100px] bg-green-500/10 border-green-500 text-green-500';
     default:
@@ -203,11 +203,11 @@ export default function PatientHomePage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
       {/* Patient Dashboard Header */}
-      <header className="bg-stone-800 text-white rounded-2xl shadow-lg overflow-hidden">
+      <header className="bg-white text-clinic-dark-secondary rounded-2xl shadow-lg overflow-hidden">
         <div className="p-6 md:p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex items-center gap-5">
-              <div className="bg-white/20 p-3 rounded-full">
+              <div className="bg-clinic-dark-secondary p-3 rounded-full">
                 <User className="h-8 w-8 text-white" />
               </div>
               <div>
@@ -215,11 +215,11 @@ export default function PatientHomePage() {
                   Hi, John Doe!
                 </h1>
                 <div className="mt-2">
-                  <p className="text-primary-foreground/90">
+                  <p className="text-clinic-dark-secondary">
                     <span className="font-semibold">Student ID:</span>{' '}
                     2020-140189
                   </p>
-                  <p className="text-primary-foreground/80">
+                  <p className="text-clinic-dark-secondary">
                     <span className="font-semibold">Course/Section:</span>{' '}
                     BSCS-SS201
                   </p>
@@ -227,7 +227,7 @@ export default function PatientHomePage() {
               </div>
             </div>
             <div className="flex justify-start lg:justify-end">
-              <Button className="bg-white text-stone-800 hover:bg-white/90 font-semibold rounded-lg px-4 py-2 h-auto transition-all duration-200 shadow-md hover:shadow-lg focus-visible:ring-2 focus-visible:ring-white/50">
+              <Button className="bg-clinic-dark-secondary text-white hover:bg-clinic-dark-secondary/90 font-semibold rounded-lg px-4 py-2 h-auto transition-all duration-200 hover:shadow-md focus-visible:ring-2 focus-visible:ring-white/50">
                 Update Patient Profile
               </Button>
             </div>
@@ -266,7 +266,7 @@ export default function PatientHomePage() {
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h3 className="font-semibold text-foreground">
+                          <h3 className="text-lg font-bold text-foreground">
                             {app.doctor.name}
                           </h3>
                         </div>
@@ -358,7 +358,7 @@ export default function PatientHomePage() {
                   >
                     <CardContent className="pt-0 p-4">
                       <div className="flex items-center justify-between mb-3">
-                        <CardTitle className="text-lg text-foreground">
+                        <CardTitle className="text-lg font-bold text-foreground">
                           {app.doctor.name}
                         </CardTitle>
                         <Badge
@@ -435,7 +435,7 @@ export default function PatientHomePage() {
                           <User className="h-4 w-4 text-muted-foreground" />
                         </div>
                         <div>
-                          <h3 className="font-medium text-foreground">
+                          <h3 className="text-lg font-bold text-foreground">
                             {app.doctor.name}
                           </h3>
                         </div>
