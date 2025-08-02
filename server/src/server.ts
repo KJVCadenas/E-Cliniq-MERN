@@ -9,9 +9,9 @@ import router from './routes';
 import { logger } from './utils/logger';
 import { errorHandler } from './middlewares/errorHandler.middleware';
 import { rateLimiter } from './middlewares/rateLimiter.middleware';
-import mongoSanitize from 'express-mongo-sanitize';
 import { xss } from 'express-xss-sanitizer';
 import helmet from 'helmet';
+import mongoSanitizer from './middlewares/mongoSanitizer.middleware';
 
 const xssOptions = {
   // Only skip sanitization for known "safe" HTML payloads
@@ -44,6 +44,7 @@ app.use(
     crossOriginEmbedderPolicy: false, // adjust if you have cross-origin image/audio needs
   })
 );
+app.use(rateLimiter);
 app.use(
   cors({
     // TODO: CORS origin is hardcoded to localhost. Should be configurable via environment variables.
@@ -51,14 +52,23 @@ app.use(
     credentials: true,
   })
 );
-app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use(errorHandler);
-app.use(rateLimiter);
-app.use(mongoSanitize()); // Mongo Sanitize (after body parsing)
+app.use(
+  mongoSanitizer({
+    removeNullBytes: true,
+    removeMongoOperators: true,
+    removeJavaScript: true,
+    maxDepth: 10,
+    maxStringLength: 10000,
+    enableLogging: process.env.NODE_ENV === 'development',
+  })
+);
+
 app.use(xss(xssOptions)); // Sanitize all incoming req.body
 
 app.use('/api', router);

@@ -5,6 +5,7 @@ import API from '@/lib/axios';
 import type { User } from '@/types/user';
 import axios from 'axios';
 import { logger } from '@/lib/logger';
+import { toast } from 'sonner';
 
 interface Props {
   children: ReactNode;
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }: Props) => {
       await API.post('api/auth/logout');
       setUser(null);
       navigate('/login');
+      toast.success("You're now logged out. Come back anytime!");
     } catch (error) {
       logger.error('Logout failed:', error);
     }

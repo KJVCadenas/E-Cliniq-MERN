@@ -80,7 +80,7 @@ export function LoginForm() {
       let message = 'Network error. Please try again.';
 
       if (axios.isAxiosError(error)) {
-        message = error.response?.data?.error || 'Wrong email or password';
+        message = error.response?.data?.error || 'Internal Server Error';
       }
 
       setErrors({ general: message });
