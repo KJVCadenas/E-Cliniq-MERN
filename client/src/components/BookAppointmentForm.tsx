@@ -30,6 +30,7 @@ import {
 import { CalendarIcon, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { sanitizeFormData } from '@/lib/sanitizer';
 
 // Form validation schema
 const appointmentSchema = z.object({
@@ -85,10 +86,13 @@ export default function BookAppointmentForm({
   const onSubmit = async (data: AppointmentFormData) => {
     setIsSubmitting(true);
 
+    // Sanitize form data before sending to server
+    const sanitizedData = sanitizeFormData(data);
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    console.log('Appointment data:', data);
+    console.log('Appointment data:', sanitizedData);
     setIsSubmitting(false);
     onSuccess();
   };

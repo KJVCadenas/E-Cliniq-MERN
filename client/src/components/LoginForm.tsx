@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import API from '../lib/axios';
 import axios from 'axios';
 import { useAuth } from '@/hooks/useAuth';
+import { sanitizeFormData } from '@/lib/sanitizer';
 
 interface LoginData {
   email: string;
@@ -67,10 +68,13 @@ export function LoginForm() {
     setErrors({});
 
     try {
-      const { data } = await API.post('/api/auth/login', {
+      // Sanitize form data before sending to server
+      const sanitizedData = sanitizeFormData({
         email: formData.email,
         password: formData.password,
       });
+
+      const { data } = await API.post('/api/auth/login', sanitizedData);
 
       setUser(data.user);
       navigate('/home');

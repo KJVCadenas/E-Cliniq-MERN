@@ -42,6 +42,7 @@ import env from '@/config/env';
 import API from '@/lib/axios';
 import { logger } from '@/lib/logger';
 import zxcvbn from 'zxcvbn';
+import { sanitizeFormData } from '@/lib/sanitizer';
 
 export function RegisterForm() {
   const [serverError, setServerError] = useState('');
@@ -67,11 +68,14 @@ export function RegisterForm() {
   const onSubmit = async (data: RegisterSchema) => {
     setServerError('');
     try {
-      await API.post('/api/auth/register', {
+      // Sanitize form data before sending to server
+      const sanitizedData = sanitizeFormData({
         ...data,
         suffix: data.suffix === 'N/A' ? '' : data.suffix,
         recaptchaToken: captchaToken,
       });
+
+      await API.post('/api/auth/register', sanitizedData);
 
       toast.success('Registration successful! Redirecting to login…');
       navigate('/login');
