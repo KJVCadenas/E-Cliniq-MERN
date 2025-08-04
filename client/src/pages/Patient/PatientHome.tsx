@@ -19,7 +19,7 @@ import {
   History,
   Loader2,
 } from 'lucide-react';
-import BookAppointmentForm from '../../components/BookAppointmentForm';
+import RequestAppointmentForm from '../../components/RequestAppointmentForm';
 import { toast } from 'sonner';
 import clsx from 'clsx';
 
@@ -332,7 +332,7 @@ export default function PatientHomePage() {
                   Request a Doctor's Appointment
                 </DialogTitle>
               </DialogHeader>
-              <BookAppointmentForm onSuccess={handleAppointmentBooked} />
+              <RequestAppointmentForm onSuccess={handleAppointmentBooked} />
             </DialogContent>
           </Dialog>
         </div>

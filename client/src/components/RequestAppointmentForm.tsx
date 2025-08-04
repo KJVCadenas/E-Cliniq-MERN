@@ -118,13 +118,13 @@ const safeDate = (value: unknown): Date | null => {
 // ------------------------------
 // Component
 // ------------------------------
-interface BookAppointmentFormProps {
+interface RequestAppointmentFormProps {
   onSuccess: () => void;
 }
 
-export default function BookAppointmentForm({
+export default function RequestAppointmentForm({
   onSuccess,
-}: BookAppointmentFormProps) {
+}: RequestAppointmentFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<AppointmentInput, unknown, AppointmentOutput>({
