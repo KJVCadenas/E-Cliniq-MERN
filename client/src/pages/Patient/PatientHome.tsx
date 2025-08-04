@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -325,13 +323,13 @@ export default function PatientHomePage() {
             <DialogTrigger asChild>
               <Button className="bg-clinic-yellow text-black hover:bg-clinic-yellow/50 font-semibold rounded-lg px-5 py-2 focus-visible:ring focus-visible:ring-accent/50 focus:outline-none">
                 <Plus className="h-4 w-4 mr-2" />
-                Book Appointment
+                Request Appointment
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
                 <DialogTitle className="text-lg">
-                  Book New Appointment
+                  Request a Doctor's Appointment
                 </DialogTitle>
               </DialogHeader>
               <BookAppointmentForm onSuccess={handleAppointmentBooked} />
