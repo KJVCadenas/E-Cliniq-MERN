@@ -9,7 +9,7 @@ export interface PatientProfileDocument extends Document {
   department?: string;
 
   dateOfBirth: Date;
-  sex: 'Male' | 'Female' | 'Other';
+  sex: 'M' | 'F' | 'X';
   civilStatus: string;
   address: string;
   telephone?: string;
@@ -43,7 +43,7 @@ const patientProfileSchema = new Schema<PatientProfileDocument>(
     sex: { type: String, enum: ['M', 'F', 'X'], required: true },
     civilStatus: { type: String, required: true },
     address: { type: String, required: true },
-    telephone: { type: String, default: '' },
+    telephone: { type: String },
     mobile: { type: String, required: true },
 
     emergencyContactPerson: { type: String, required: true },

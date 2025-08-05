@@ -31,13 +31,6 @@ router.post(
 );
 
 /**
- * GET /patients/profile/:id
- * Get any patient's profile by ID
- * Roles: "doctor", "nurse", "admin"
- */
-router.get('/:id', requireAuth(['doctor', 'nurse', 'admin']), getProfileById);
-
-/**
  * PATCH /patients/profile/:id
  * Admin updates a profile by ID
  * Roles: "admin"
@@ -48,5 +41,12 @@ router.patch(
   validate(updateProfileSchema),
   updateProfileById
 );
+
+/**
+ * GET /patients/profile/:id
+ * Get any patient's profile by ID
+ * Roles: "doctor", "nurse", "admin"
+ */
+router.get('/:id', requireAuth(['doctor', 'nurse', 'admin']), getProfileById);
 
 export default router;

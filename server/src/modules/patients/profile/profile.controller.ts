@@ -1,35 +1,63 @@
 import { Request, Response } from 'express';
+import {
+  PatientProfileInput,
+  patientProfileSchema,
+} from './profile.validation';
+import {
+  createProfileService,
+  getProfileService,
+  getOwnProfileService,
+  updateProfileService,
+} from './profile.service';
+import { logger } from '@/utils/logger';
 
-// GET /patients/profile/me
-export const getOwnProfile = async (req: Request, res: Response) => {
-  const userId = req.user?.id;
-
-  // TODO: Replace with actual DB lookup using userId
-  res.status(200).json({ message: `Fetching profile for user ${userId}` });
-};
-
-// POST /patients/profile
 export const createProfile = async (req: Request, res: Response) => {
-  const userId = req.user?.id;
-  const data = req.body;
-
-  // TODO: Save profile in DB with userId
-  res.status(201).json({ message: `Created profile for user ${userId}`, data });
+  try {
+    const input = patientProfileSchema.parse(req.body) as PatientProfileInput;
+    const profile = await createProfileService(req.user!.id, input);
+    res.status(201).json({ message: 'Profile created', profile });
+  } catch (err: any) {
+    logger.error(err, req);
+    if (err.errors) {
+      return res.status(400).json({ error: err.errors });
+    }
+    res.status(500).json({ error: err.message });
+  }
 };
 
-// GET /patients/profile/:id
+export const getOwnProfile = async (req: Request, res: Response) => {
+  try {
+    const profile = await getOwnProfileService(req.user!.id);
+    if (!profile) return res.status(404).json({ error: 'Profile not found' });
+    res.status(200).json({ profile });
+  } catch (err: any) {
+    logger.error(err, req);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export const getProfileById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-
-  // TODO: Lookup profile by ID
-  res.status(200).json({ message: `Fetched profile for ID ${id}` });
+  try {
+    const profile = await getProfileService(req.params.id);
+    if (!profile) return res.status(404).json({ error: 'Profile not found' });
+    res.status(200).json({ profile });
+  } catch (err: any) {
+    logger.error(err, req);
+    res.status(500).json({ error: err.message });
+  }
 };
 
-// PATCH /patients/profile/:id
 export const updateProfileById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const updates = req.body;
-
-  // TODO: Update profile in DB
-  res.status(200).json({ message: `Updated profile for ID ${id}`, updates });
+  try {
+    const input = patientProfileSchema.parse(req.body) as PatientProfileInput;
+    const profile = await updateProfileService(req.params.id, input);
+    if (!profile) return res.status(404).json({ error: 'Profile not found' });
+    res.status(200).json({ message: 'Profile updated', profile });
+  } catch (err: any) {
+    logger.error(err, req);
+    if (err.errors) {
+      return res.status(400).json({ error: err.errors });
+    }
+    res.status(500).json({ error: err.message });
+  }
 };
