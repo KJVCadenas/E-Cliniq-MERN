@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { logger } from '../../utils/logger';
-import { UserRole } from './auth.types';
+import { logger } from '../utils/logger';
+import { UserRole } from '../modules/auth/auth.types';
 
 const JWT_SECRET = process.env.JWT_SECRET || '';
 
 export const requireAuth =
   (allowedRoles?: UserRole[]) =>
   (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies?.token; // 👈 read from cookie instead
+    const token = req.cookies?.token;
 
     if (!token) {
       return res.status(401).json({ error: 'Unauthorized: No token provided' });

@@ -5,7 +5,7 @@ import {
   registerHandler,
   userDataHandler,
 } from './auth.controller';
-import { requireAuth } from './auth.middleware';
+import { requireAuth } from '../../middlewares/requireAuth.middleware';
 import { registerSchema } from './auth.validation';
 import { validate } from '../../utils/validate';
 

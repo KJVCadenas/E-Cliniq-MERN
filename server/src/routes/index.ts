@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import authRoutes from '../modules/auth/auth.routes';
-import { requireAuth } from '../modules/auth/auth.middleware';
+import profileRoutes from '../modules/patients/profile/profile.routes';
+import { requireAuth } from '../middlewares/requireAuth.middleware';
 import { Request, Response } from 'express';
 
 const router = Router();
 
 router.use('/auth', authRoutes);
+router.use('/patients', profileRoutes);
 
 // 🔐 Protected test route
 router.get(
