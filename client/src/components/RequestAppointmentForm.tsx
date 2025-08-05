@@ -192,9 +192,9 @@ export default function RequestAppointmentForm({
                       <Button
                         variant="outline"
                         className={cn(
-                          'w-full h-10 pl-3 text-left font-normal',
+                          'w-full pl-3 text-left font-normal',
                           !field.value ? 'text-muted-foreground' : '',
-                          'hover:bg-accent/5'
+                          'hover:bg-white border-1 border-input'
                         )}
                       >
                         {safeDate(field.value) ? (
