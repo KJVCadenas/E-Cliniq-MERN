@@ -1,20 +1,22 @@
 // src/utils/validate.ts
+import { ZodType, ZodError, infer as zInfer } from 'zod';
 import { Request, Response, NextFunction } from 'express';
-import { ZodObject, ZodRawShape, z } from 'zod';
 
-export const validate =
-  (schema: ZodObject<ZodRawShape>) =>
-  (req: Request, res: Response, next: NextFunction) => {
+export function validate<T extends ZodType>(schema: T) {
+  return (req: Request, res: Response, next: NextFunction) => {
     const result = schema.safeParse(req.body);
 
     if (!result.success) {
-      // Use z.flattenError() for flat error structure
-      const flattened = z.flattenError(result.error);
+      const error = result.error as ZodError;
       return res.status(400).json({
-        errors: flattened.fieldErrors, // { fieldName: string[] }
+        errors: error.issues.map(issue => ({
+          path: issue.path.join('.'),
+          message: issue.message,
+        })),
       });
     }
 
-    req.body = result.data;
+    req.body = result.data as zInfer<T>;
     next();
   };
+}

@@ -1,55 +1,80 @@
-// profile.validation.ts
+// src/validations/profile.validation.ts
 import { z } from 'zod';
+
+// ---------- Common Field Groups ----------
+const requiredString = (msg: string) => z.string().min(1, msg);
+
+const personalInfoSchema = {
+  idNumber: requiredString('ID number is required'),
+  dateOfBirth: z.coerce
+    .date()
+    .refine(
+      date => !isNaN(date.getTime()),
+      'Date of birth must be a valid date'
+    ),
+  sex: z.enum(['M', 'F', 'X'], { message: 'Sex must be one of: M, F, or X' }),
+  civilStatus: requiredString('Civil status is required'),
+  address: requiredString('Address is required'),
+  telephone: z.string().optional(),
+  mobile: requiredString('Mobile number is required'),
+};
+
+const emergencyContactSchema = {
+  emergencyContactPerson: requiredString(
+    'Emergency contact person is required'
+  ),
+  emergencyContactNumber: requiredString(
+    'Emergency contact number is required'
+  ),
+  emergencyContactRelation: requiredString(
+    'Emergency contact relation is required'
+  ),
+};
 
 const baseProfileSchema = z.object({
   userType: z.enum(['student', 'employee'], {
-    error: issue => 'User type must be either "student" or "employee"',
+    message: 'User type must be either "student" or "employee"',
   }),
-  idNumber: z.string({ error: () => 'ID number is required' }).min(1),
-
-  dateOfBirth: z.coerce.date({
-    error: issue =>
-      issue.code === 'invalid_type'
-        ? 'Date of birth must be a valid date'
-        : 'Invalid date',
-  }),
-
-  sex: z.enum(['M', 'F', 'X'], {
-    error: () => 'Sex must be one of: M, F, or X',
-  }),
-
-  civilStatus: z.string({ error: () => 'Civil status is required' }).min(1),
-  address: z.string({ error: () => 'Address is required' }).min(1),
-  telephone: z.string().optional(),
-  mobile: z.string({ error: () => 'Mobile number is required' }).min(1),
-
-  emergencyContactPerson: z
-    .string({ error: () => 'Emergency contact person is required' })
-    .min(1),
-  emergencyContactNumber: z
-    .string({ error: () => 'Emergency contact number is required' })
-    .min(1),
-  emergencyContactRelation: z
-    .string({ error: () => 'Emergency contact relation is required' })
-    .min(1),
+  ...personalInfoSchema,
+  ...emergencyContactSchema,
 });
 
-// Discriminated union for student vs employee
-export const patientProfileSchema = z.discriminatedUnion('userType', [
+// ---------- Role-Specific Field Groups ----------
+const studentFields = {
+  courseSection: requiredString('Course section is required'),
+  yearLevel: requiredString('Year level is required'),
+  department: z.undefined(),
+};
+
+const employeeFields = {
+  department: requiredString('Department is required'),
+  courseSection: z.undefined(),
+  yearLevel: z.undefined(),
+};
+
+// ---------- Create Schemas ----------
+export const createProfileSchema = z.discriminatedUnion('userType', [
   baseProfileSchema.extend({
     userType: z.literal('student'),
-    courseSection: z
-      .string({ error: () => 'Course section is required' })
-      .min(1),
-    yearLevel: z.string({ error: () => 'Year level is required' }).min(1),
-    department: z.undefined(),
+    ...studentFields,
   }),
   baseProfileSchema.extend({
     userType: z.literal('employee'),
-    department: z.string({ error: () => 'Department is required' }).min(1),
-    courseSection: z.undefined(),
-    yearLevel: z.undefined(),
+    ...employeeFields,
   }),
 ]);
 
-export type PatientProfileInput = z.infer<typeof patientProfileSchema>;
+// ---------- Update Schemas (All optional except userType) ----------
+export const updateProfileSchema = z.discriminatedUnion('userType', [
+  baseProfileSchema
+    .extend({ userType: z.literal('student'), ...studentFields })
+    .partial()
+    .extend({ userType: z.literal('student') }),
+  baseProfileSchema
+    .extend({ userType: z.literal('employee'), ...employeeFields })
+    .partial()
+    .extend({ userType: z.literal('employee') }),
+]);
+
+// ---------- Types ----------
+export type PatientProfileInput = z.infer<typeof createProfileSchema>;
