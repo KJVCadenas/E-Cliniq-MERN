@@ -1,9 +1,5 @@
 import { Request, Response } from 'express';
 import {
-  PatientProfileInput,
-  patientProfileSchema,
-} from './profile.validation';
-import {
   createProfileService,
   getProfileService,
   getOwnProfileService,
@@ -13,8 +9,7 @@ import { logger } from '@/utils/logger';
 
 export const createProfile = async (req: Request, res: Response) => {
   try {
-    const input = patientProfileSchema.parse(req.body) as PatientProfileInput;
-    const profile = await createProfileService(req.user!.id, input);
+    const profile = await createProfileService(req.user!.id, req.body);
     res.status(201).json({ message: 'Profile created', profile });
   } catch (err: any) {
     logger.error(err, req);
@@ -49,8 +44,7 @@ export const getProfileById = async (req: Request, res: Response) => {
 
 export const updateProfileById = async (req: Request, res: Response) => {
   try {
-    const input = patientProfileSchema.parse(req.body) as PatientProfileInput;
-    const profile = await updateProfileService(req.params.id, input);
+    const profile = await updateProfileService(req.params.id, req.body);
     if (!profile) return res.status(404).json({ error: 'Profile not found' });
     res.status(200).json({ message: 'Profile updated', profile });
   } catch (err: any) {
