@@ -11,42 +11,30 @@ import { createProfileSchema, updateProfileSchema } from './profile.validation';
 
 const router = Router();
 
-/**
- * GET /patients/profile/me
- * Patient retrieves their own profile
- * Roles: "patient"
- */
+// Get current Patient Profile
 router.get('/me', requireAuth(['patient']), getOwnProfile);
 
-/**
- * POST /patients/profile
- * Patient creates their own profile
- * Roles: "patient"
- */
+// Create a Patient Profile
 router.post(
-  '/',
+  '/profile',
   requireAuth(['patient']),
   validate(createProfileSchema),
   createProfile
 );
 
-/**
- * PATCH /patients/profile/:id
- * Admin updates a profile by ID
- * Roles: "admin"
- */
+// Update parts of the existing Patient Profile
 router.patch(
-  '/:id',
+  '/profile/:id',
   requireAuth(['admin']),
   validate(updateProfileSchema),
   updateProfileById
 );
 
-/**
- * GET /patients/profile/:id
- * Get any patient's profile by ID
- * Roles: "doctor", "nurse", "admin"
- */
-router.get('/:id', requireAuth(['doctor', 'nurse', 'admin']), getProfileById);
+// Find a specific Patient Profile
+router.get(
+  '/profile/:id',
+  requireAuth(['doctor', 'nurse', 'admin']),
+  getProfileById
+);
 
 export default router;
