@@ -7,7 +7,7 @@ import {
 } from './profile.service';
 import { logger } from '@/utils/logger';
 
-export const createProfile = async (req: Request, res: Response) => {
+export const createProfileController = async (req: Request, res: Response) => {
   try {
     const profile = await createProfileService(req.user!.id, req.body);
     res.status(201).json({ message: 'Profile created', profile });
@@ -20,7 +20,7 @@ export const createProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const getOwnProfile = async (req: Request, res: Response) => {
+export const getOwnProfileController = async (req: Request, res: Response) => {
   try {
     const profile = await getOwnProfileService(req.user!.id);
     if (!profile) return res.status(404).json({ error: 'Profile not found' });
@@ -31,7 +31,7 @@ export const getOwnProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const getProfileById = async (req: Request, res: Response) => {
+export const getProfileByIdController = async (req: Request, res: Response) => {
   try {
     const profile = await getProfileService(req.params.id);
     if (!profile) return res.status(404).json({ error: 'Profile not found' });
@@ -42,7 +42,10 @@ export const getProfileById = async (req: Request, res: Response) => {
   }
 };
 
-export const updateProfileById = async (req: Request, res: Response) => {
+export const updateProfileByIdController = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const profile = await updateProfileService(req.params.id, req.body);
     if (!profile) return res.status(404).json({ error: 'Profile not found' });

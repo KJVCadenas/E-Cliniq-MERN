@@ -4,7 +4,7 @@ import { RegisterInput, LoginInput } from './auth.types';
 import { signToken, verifyToken } from '../../utils/jwt';
 import axios from 'axios';
 
-export const register = async (input: RegisterInput) => {
+export const registerService = async (input: RegisterInput) => {
   const existingUser = await User.findOne({ email: input.email });
   if (existingUser) throw new Error('Email already registered');
 
@@ -26,7 +26,7 @@ export const register = async (input: RegisterInput) => {
   return user;
 };
 
-export const login = async (input: LoginInput) => {
+export const loginService = async (input: LoginInput) => {
   const user = await User.findOne({ email: input.email });
   if (!user) throw new Error('Invalid credentials');
 
@@ -39,7 +39,7 @@ export const login = async (input: LoginInput) => {
   return { token, user: safeUser };
 };
 
-export const getMe = async (id: string) => {
+export const getMeService = async (id: string) => {
   const user = await User.findById(id).select('-password');
   if (!user) throw new Error('User not found');
 
