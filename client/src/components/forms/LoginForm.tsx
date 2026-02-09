@@ -14,7 +14,7 @@ import { logger } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { Loader2Icon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import API from '../lib/axios';
+import API from '../../lib/axios';
 import axios from 'axios';
 import { useAuth } from '@/hooks/useAuth';
 import { sanitizeFormData } from '@/lib/sanitizer';

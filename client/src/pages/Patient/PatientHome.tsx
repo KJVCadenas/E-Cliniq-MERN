@@ -19,7 +19,7 @@ import {
   History,
   Loader2,
 } from 'lucide-react';
-import RequestAppointmentForm from '../../components/RequestAppointmentForm';
+import RequestAppointmentForm from '@/components/forms/RequestAppointmentForm';
 import { toast } from 'sonner';
 import clsx from 'clsx';
 
